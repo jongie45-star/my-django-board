@@ -1,0 +1,42 @@
+{% extends 'board/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">새 글 작성</h5>
+                {% if user.is_authenticated %}
+                <form method="POST">
+                    {% csrf_token %} <!-- 장고의 필수 보안 토큰 -->
+                    <div class="mb-3">
+                        <label class="form-label">제목</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">내용</label>
+                        <textarea name="content" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">등록</button>
+                </form>
+                {% else %}
+                <p class="text-muted text-center py-4">글을 쓰려면 <a href="{% url 'login' %}">로그인</a>하세요.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h3 class="mb-4">게시글 목록</h3>
+        {% for post in posts %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">{{ post.content }}</p>
+                <small class="text-muted">작성자: {{ post.author.username }} | {{ post.created_at }}</small>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">등록된 글이 없습니다.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
